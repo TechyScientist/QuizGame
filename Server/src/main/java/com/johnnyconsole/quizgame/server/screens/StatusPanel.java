@@ -63,7 +63,7 @@ public class StatusPanel extends Application {
 
         Scene scene = new Scene(root);
         ps.setScene(scene);
-        ps.setTitle("eQuiz Server App");
+        ps.setTitle("Quiz Game: Status Panel");
         ps.show();
     }
 
@@ -102,6 +102,7 @@ public class StatusPanel extends Application {
 
     private void beginGame() {
         start.setDisable(true);
+        start.setText("Game In Progress...");
         // Broadcast to all connected stations that the game is starting
         stations.values().forEach(socket -> socket.send("GAME_START"));
         // TODO: Fetch first question and send to stations
