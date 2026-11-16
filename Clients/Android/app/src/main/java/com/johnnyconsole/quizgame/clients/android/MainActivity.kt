@@ -13,8 +13,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.snackbar.Snackbar
 import com.johnnyconsole.quizgame.clients.android.enums.Role
 import com.johnnyconsole.quizgame.clients.android.socket.GameSocketClient
-import java.net.HttpURLConnection
-import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
@@ -38,11 +36,11 @@ class MainActivity : AppCompatActivity() {
             btConnect.setOnClickListener { _ ->
                 etEndpoint.background = AppCompatResources.getDrawable(
                     this@MainActivity,
-                    R.drawable.drawable_box_border
+                    R.drawable.dr_border_rounded_blue
                 )
                 rgRoleSelect.background = AppCompatResources.getDrawable(
                     this@MainActivity,
-                    R.drawable.drawable_box_border
+                    R.drawable.dr_border_rounded_blue
                 )
 
                 if (!connected && !connecting) {
@@ -64,11 +62,11 @@ class MainActivity : AppCompatActivity() {
                                 pbProgressIndicator.visibility = GONE
                                 etEndpoint.background = AppCompatResources.getDrawable(
                                     this@MainActivity,
-                                    R.drawable.drawable_connected_box_border
+                                    R.drawable.dr_border_rounded_green
                                 )
                                 rgRoleSelect.background = AppCompatResources.getDrawable(
                                     this@MainActivity,
-                                    R.drawable.drawable_connected_box_border
+                                    R.drawable.dr_border_rounded_green
                                 )
                                 Snackbar.make(this@MainActivity, main,
                                     "Connected to game endpoint as: $role",
@@ -94,11 +92,11 @@ class MainActivity : AppCompatActivity() {
                                 if(error != "Client closed connection") {
                                     etEndpoint.background = AppCompatResources.getDrawable(
                                         this@MainActivity,
-                                        R.drawable.drawable_error_box_border
+                                        R.drawable.dr_border_rounded_red
                                     )
                                     rgRoleSelect.background = AppCompatResources.getDrawable(
                                         this@MainActivity,
-                                        R.drawable.drawable_error_box_border
+                                        R.drawable.dr_border_rounded_red
                                     )
                                 }
 
