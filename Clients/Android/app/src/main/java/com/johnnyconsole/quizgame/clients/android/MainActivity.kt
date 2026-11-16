@@ -12,14 +12,13 @@ import android.view.View.GONE
 import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.snackbar.Snackbar
 import com.johnnyconsole.quizgame.clients.android.enums.Role
-import com.johnnyconsole.quizgame.clients.android.socket.GameSocketClient
+import com.johnnyconsole.quizgame.clients.android.socket.SocketManager.client
+import com.johnnyconsole.quizgame.clients.android.socket.SocketManager.isConnected
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var socket: GameSocketClient
     private var connecting = false
-    private var connected = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -43,8 +42,9 @@ class MainActivity : AppCompatActivity() {
                     R.drawable.dr_border_rounded_blue
                 )
 
-                if (!connected && !connecting) {
+                if (!isConnected && !connecting) {
                     connecting = true
+                    setInputsEnabled(false)
                     pbProgressIndicator.visibility = VISIBLE
 
                     val role = when(rgRoleSelect.checkedRadioButtonId) {
@@ -53,11 +53,14 @@ class MainActivity : AppCompatActivity() {
                         else -> "HOST"
                     }
 
-                    socket = GameSocketClient(
+                    client.apply {
                         onConnected = {
+                            // Send the registration command immediately upon handshake
+                            registerRole(Role.valueOf(role))
+
                             runOnUiThread {
                                 connecting = false
-                                connected = true
+                                isConnected = true
                                 btConnect.text = getString(R.string.lb_disconnect)
                                 pbProgressIndicator.visibility = GONE
                                 etEndpoint.background = AppCompatResources.getDrawable(
@@ -68,24 +71,49 @@ class MainActivity : AppCompatActivity() {
                                     this@MainActivity,
                                     R.drawable.dr_border_rounded_green
                                 )
-                                Snackbar.make(this@MainActivity, main,
-                                    "Connected to game endpoint as: $role",
-                                    Snackbar.LENGTH_LONG
-                                ).show()
                             }
-                        },
-                        onMessageReceived = { jsonMessage ->
-                            runOnUiThread {
-                                Log.d("QuizGame", "Received Message: $jsonMessage")
-                                // Parse incoming quiz question or game state and update UI
+                        }
 
+                        onMessageReceived = { message ->
+                            runOnUiThread {
+                                Log.d("QuizGame", "Received Message: $message")
+
+                                when {
+                                    message == "REGISTERED:$role" -> {
+                                        // Role accepted by server! Launch the appropriate Activity
+                                        /* val targetActivity = when (Role.valueOf(role)) {
+                                            Role.HOST -> HostActivity::class.java
+                                            Role.PLAYER -> PlayerActivity::class.java
+                                            Role.CHASER -> ChaserActivity::class.java
+                                        }
+                                        startActivity(Intent(this@MainActivity, targetActivity))
+                                         */
+                                    }
+
+                                    message == "ERROR:ROLE_TAKEN" -> {
+                                        // Server rejected the role; disconnect so the user can pick another
+                                        client.disconnect()
+                                        rgRoleSelect.background = AppCompatResources.getDrawable(
+                                            this@MainActivity,
+                                            R.drawable.dr_border_rounded_red
+                                        )
+                                        Snackbar.make(
+                                            this@MainActivity, main,
+                                            "The $role station is already taken!",
+                                            Snackbar.LENGTH_LONG
+                                        ).show()
+                                    }
+                                }
                             }
-                        },
+                        }
+
                         onDisconnected = { error ->
                             runOnUiThread {
                                 btConnect.text = getString(R.string.lb_connect)
                                 Log.e("QuizGame", "Error: $error")
-                                connected = false
+                                connecting = false
+                                isConnected = false
+                                setInputsEnabled(true)
                                 Snackbar.make(this@MainActivity, main,
                                     "Disconnected from game endpoint",
                                     Snackbar.LENGTH_LONG).show()
@@ -99,26 +127,51 @@ class MainActivity : AppCompatActivity() {
                                         R.drawable.dr_border_rounded_red
                                     )
                                 }
-
+                                pbProgressIndicator.visibility = GONE
                             }
                         }
-                    )
 
-                    socket.connect("${etEndpoint.text}")
-                    socket.registerRole(Role.valueOf(role))
-
+                    connect("${etEndpoint.text}")
+                    }
                 }
-                else if(!connected){
+                else if(!isConnected){
                     Snackbar.make(main, "Connection in Progress, Please wait...",
                         Snackbar.LENGTH_LONG).show()
                 }
-
                 else {
-                    socket.disconnect()
-
+                    client.disconnect()
                 }
-
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        with(binding) {
+            setInputsEnabled(!isConnected)
+            if (isConnected) {
+                btConnect.text = getString(R.string.lb_disconnect)
+            } else {
+                btConnect.text = getString(R.string.lb_connect)
+                etEndpoint.background = AppCompatResources.getDrawable(
+                    this@MainActivity,
+                    R.drawable.dr_border_rounded_blue
+                )
+                rgRoleSelect.background = AppCompatResources.getDrawable(
+                    this@MainActivity,
+                    R.drawable.dr_border_rounded_blue
+                )
+            }
+        }
+    }
+
+    private fun setInputsEnabled(enabled: Boolean) {
+        with(binding) {
+            etEndpoint.isEnabled = enabled
+            rgRoleSelect.isEnabled = enabled
+            rbHostStation.isEnabled = enabled
+            rbPlayerStation.isEnabled = enabled
+            rbChaserStation.isEnabled = enabled
         }
     }
 }
