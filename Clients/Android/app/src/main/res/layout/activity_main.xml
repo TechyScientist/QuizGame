@@ -101,6 +101,7 @@
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/pbProgressIndicator"
         android:indeterminate="true"
         android:indeterminateTint="@color/primary"
         android:visibility="gone"
