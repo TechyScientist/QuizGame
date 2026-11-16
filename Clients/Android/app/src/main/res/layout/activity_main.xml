@@ -58,17 +58,23 @@
             android:layout_height="wrap_content"
             android:id="@+id/rbPlayerStation"
             android:checked="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/lb_player_station"/>
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/rbChaserStation"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/lb_chaser_station"/>
 
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
             android:id="@+id/rbHostStation"
             android:text="@string/lb_host_station"/>
 
@@ -86,7 +92,7 @@
         app:layout_constraintBottom_toTopOf="@id/rgRoleSelect"
         app:layout_constraintStart_toStartOf="@id/etEndpoint" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:id="@+id/btConnect"
