@@ -28,7 +28,7 @@ public class GameServer extends WebSocketServer {
     public void onMessage(WebSocket conn, String message) {
         System.out.println("Received: " + message);
 
-        // Expected handshake format from apps: "REGISTER:HOST", "REGISTER:PLAYER", or "REGISTER:OPPONENT"
+        // Expected handshake format from apps: "REGISTER:HOST", "REGISTER:PLAYER", or "REGISTER:CHASER"
         if (message.startsWith("REGISTER:")) {
             String roleStr = message.substring("REGISTER:".length()).trim().toUpperCase();
             try {

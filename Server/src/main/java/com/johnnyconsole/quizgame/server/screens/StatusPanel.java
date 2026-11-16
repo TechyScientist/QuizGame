@@ -19,12 +19,13 @@ import java.net.InetAddress;
 import java.util.Map;
 
 import static com.johnnyconsole.quizgame.server.GameState.*;
+import static com.johnnyconsole.quizgame.server.enums.Role.*;
 
 public class StatusPanel extends Application {
 
     private final Label hostStatus = new Label("Disconnected"),
             playerStatus = new Label("Disconnected"),
-            opponentStatus = new Label("Disconnected");
+            chaserStatus = new Label("Disconnected");
     private final Button start = new Button("Begin Game");
 
     @Override
@@ -35,7 +36,7 @@ public class StatusPanel extends Application {
         root.setVgap(root.getHgap());
 
         Label endpoint = new Label("ws://" + getEndpoint() + ":" + PORT + "/");
-        endpoint.setStyle("-fx-text-fill: #162DA3FF; -fx-font-weight: bold;");
+        endpoint.setStyle("-fx-text-fill: #162da3; -fx-font-weight: bold;");
 
         start.setMaxWidth(Double.MAX_VALUE);
         start.setDisable(true);
@@ -45,7 +46,7 @@ public class StatusPanel extends Application {
         root.addRow(0, new Label("Endpoint:"), endpoint);
         root.addRow(1, new Label("Host Station:"), hostStatus);
         root.addRow(2, new Label("Player Station:"), playerStatus);
-        root.addRow(3, new Label("Opponent Station:"), opponentStatus);
+        root.addRow(3, new Label("Chaser Station:"), chaserStatus);
         root.add(start, 0, 4, 2, 1);
 
         // Start the WebSocket server in the background
@@ -95,7 +96,7 @@ public class StatusPanel extends Application {
 
         Platform.runLater(() -> {
             // Handle incoming commands from stations here!
-            // Example: "ANSWER:A" from PLAYER/OPPONENT, or "COMMAND:REVEAL" / "COMMAND:NEXT" from HOST
+            // Example: "ANSWER:A" from PLAYER/CHASER, or "COMMAND:REVEAL" / "COMMAND:NEXT" from HOST
             System.out.println(senderRole + " sent: " + message);
         });
     }
@@ -109,9 +110,9 @@ public class StatusPanel extends Application {
     }
 
     private void updateUI() {
-        updateLabel(hostStatus, stations.containsKey(Role.HOST));
-        updateLabel(playerStatus, stations.containsKey(Role.PLAYER));
-        updateLabel(opponentStatus, stations.containsKey(Role.OPPONENT));
+        updateLabel(hostStatus, stations.containsKey(HOST));
+        updateLabel(playerStatus, stations.containsKey(PLAYER));
+        updateLabel(chaserStatus, stations.containsKey(CHASER));
         start.setDisable(stations.size() < 3);
     }
 
