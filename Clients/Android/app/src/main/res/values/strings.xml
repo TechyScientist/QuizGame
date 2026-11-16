@@ -3,6 +3,7 @@
     <string name="lb_endpoint">Game Server Endpoint</string>
     <string name="lb_role_select">Select Role:</string>
     <string name="lb_connect">Connect</string>
+    <string name="lb_disconnect">Disconnect</string>
     <string name="lb_host_station">Host Station</string>
     <string name="lb_player_station">Player Station</string>
     <string name="lb_chaser_station">Chaser Station</string>
