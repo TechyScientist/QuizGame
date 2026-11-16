@@ -1,6 +1,7 @@
 package com.johnnyconsole.quizgame.clients.android
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -8,13 +9,17 @@ import androidx.core.view.WindowInsetsCompat
 import com.johnnyconsole.quizgame.clients.android.databinding.ActivityMainBinding
 import android.view.View.VISIBLE
 import android.view.View.GONE
+import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.snackbar.Snackbar
+import com.johnnyconsole.quizgame.clients.android.enums.Role
+import com.johnnyconsole.quizgame.clients.android.socket.GameSocketClient
 import java.net.HttpURLConnection
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var socket: GameSocketClient
     private var connecting = false
     private var connected = false
 
@@ -31,7 +36,16 @@ class MainActivity : AppCompatActivity() {
             }
 
             btConnect.setOnClickListener { _ ->
-                if (!connecting) {
+                etEndpoint.background = AppCompatResources.getDrawable(
+                    this@MainActivity,
+                    R.drawable.drawable_box_border
+                )
+                rgRoleSelect.background = AppCompatResources.getDrawable(
+                    this@MainActivity,
+                    R.drawable.drawable_box_border
+                )
+
+                if (!connected && !connecting) {
                     connecting = true
                     pbProgressIndicator.visibility = VISIBLE
 
@@ -41,14 +55,70 @@ class MainActivity : AppCompatActivity() {
                         else -> "HOST"
                     }
 
-                    var conn = URL("${etEndpoint.text}/register/$role").openConnection() as HttpURLConnection
+                    socket = GameSocketClient(
+                        onConnected = {
+                            runOnUiThread {
+                                connecting = false
+                                connected = true
+                                btConnect.text = getString(R.string.lb_disconnect)
+                                pbProgressIndicator.visibility = GONE
+                                etEndpoint.background = AppCompatResources.getDrawable(
+                                    this@MainActivity,
+                                    R.drawable.drawable_connected_box_border
+                                )
+                                rgRoleSelect.background = AppCompatResources.getDrawable(
+                                    this@MainActivity,
+                                    R.drawable.drawable_connected_box_border
+                                )
+                                Snackbar.make(this@MainActivity, main,
+                                    "Connected to game endpoint as: $role",
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                            }
+                        },
+                        onMessageReceived = { jsonMessage ->
+                            runOnUiThread {
+                                Log.d("QuizGame", "Received Message: $jsonMessage")
+                                // Parse incoming quiz question or game state and update UI
+
+                            }
+                        },
+                        onDisconnected = { error ->
+                            runOnUiThread {
+                                btConnect.text = getString(R.string.lb_connect)
+                                Log.e("QuizGame", "Error: $error")
+                                connected = false
+                                Snackbar.make(this@MainActivity, main,
+                                    "Disconnected from game endpoint",
+                                    Snackbar.LENGTH_LONG).show()
+                                if(error != "Client closed connection") {
+                                    etEndpoint.background = AppCompatResources.getDrawable(
+                                        this@MainActivity,
+                                        R.drawable.drawable_error_box_border
+                                    )
+                                    rgRoleSelect.background = AppCompatResources.getDrawable(
+                                        this@MainActivity,
+                                        R.drawable.drawable_error_box_border
+                                    )
+                                }
+
+                            }
+                        }
+                    )
+
+                    socket.connect("${etEndpoint.text}")
+                    socket.registerRole(Role.valueOf(role))
 
                 }
-                else {
+                else if(!connected){
                     Snackbar.make(main, "Connection in Progress, Please wait...",
                         Snackbar.LENGTH_LONG).show()
                 }
 
+                else {
+                    socket.disconnect()
+
+                }
 
             }
         }
