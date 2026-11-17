@@ -9,24 +9,24 @@ class ViewController: UIViewController {
     
     private var connecting = false
     private let client = SocketManager.shared.client
-
-        override func viewDidLoad() {
-            super.viewDidLoad()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
+        styleBorder(view: rgRoleSelect, color: UIColor(named: "border-blue")!)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Re-sync UI if user navigates back from Host/Response screen
+        let connected = SocketManager.shared.isConnected
+        setInputsEnabled(!connected)
+        btConnect.setTitle(connected ? "Disconnect" : "Connect", for: .normal)
+        if !connected {
             styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
             styleBorder(view: rgRoleSelect, color: UIColor(named: "border-blue")!)
         }
-
-        override func viewWillAppear(_ animated: Bool) {
-            super.viewWillAppear(animated)
-            // Re-sync UI if user navigates back from Host/Response screen
-            let connected = SocketManager.shared.isConnected
-            setInputsEnabled(!connected)
-            btConnect.setTitle(connected ? "Disconnect" : "Connect", for: .normal)
-            if !connected {
-                styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
-                styleBorder(view: rgRoleSelect, color: UIColor(named: "border-blue")!)
-            }
-        }
+    }
     
     @IBAction func onConnect() {
         styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
@@ -38,9 +38,9 @@ class ViewController: UIViewController {
             
             let selectedRole: Role =
             switch rgRoleSelect.selectedSegmentIndex {
-                case 0: .challenger
-                case 1: .chaser
-                default: .host
+            case 0: .challenger
+            case 1: .chaser
+            default: .host
             }
             
             client.onConnected = { [weak self] in
@@ -61,7 +61,7 @@ class ViewController: UIViewController {
                 if message == "REGISTERED:\(selectedRole.rawValue)" {
                     // Detach listener before transitioning so next VC takes over cleanly
                     self.client.onMessageReceived = nil
-                    //self.navigateToGameScreen(for: selectedRole)
+                    self.navigateToGameScreen(for: selectedRole)
                 } else if message == "ERROR:ROLE_TAKEN" {
                     self.client.disconnect()
                     self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "border-red")!)
@@ -91,23 +91,41 @@ class ViewController: UIViewController {
             client.disconnect()
         }
     }
-
+    
     private func setInputsEnabled(_ enabled: Bool) {
-            etEndpoint.isEnabled = enabled
-            rgRoleSelect.isEnabled = enabled
+        etEndpoint.isEnabled = enabled
+        rgRoleSelect.isEnabled = enabled
+    }
+    
+    private func styleBorder(view: UIView, color: UIColor) {
+        view.layer.borderWidth = 1.5
+        view.layer.borderColor = color.cgColor
+        view.layer.cornerRadius = 8.0
+    }
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    private func navigateToGameScreen(for role: Role) {
+        let identifier =
+        switch(role) {
+            case .host: "ShowHostViewController"
+            default: "ShowResponseViewController"
         }
-
-        private func styleBorder(view: UIView, color: UIColor) {
-            view.layer.borderWidth = 1.5
-            view.layer.borderColor = color.cgColor
-            view.layer.cornerRadius = 8.0
+        
+        performSegue(withIdentifier: identifier, sender: role)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowResponseViewController",
+           let destination = segue.destination as? ResponseViewController,
+           let role = sender as? Role {
+            destination.playingAs(role: role)
         }
-
-        private func showAlert(title: String, message: String) {
-            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
-        }
+    }
     
 }
 
