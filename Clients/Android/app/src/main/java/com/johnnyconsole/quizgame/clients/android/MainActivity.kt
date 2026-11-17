@@ -1,5 +1,6 @@
 package com.johnnyconsole.quizgame.clients.android
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.enableEdgeToEdge
@@ -81,13 +82,11 @@ class MainActivity : AppCompatActivity() {
                                 when {
                                     message == "REGISTERED:$role" -> {
                                         // Role accepted by server! Launch the appropriate Activity
-                                        /* val targetActivity = when (Role.valueOf(role)) {
+                                        val targetActivity = when (Role.valueOf(role)) {
                                             Role.HOST -> HostActivity::class.java
-                                            Role.PLAYER -> PlayerActivity::class.java
-                                            Role.CHASER -> ChaserActivity::class.java
+                                            else -> PlayerActivity::class.java
                                         }
                                         startActivity(Intent(this@MainActivity, targetActivity))
-                                         */
                                     }
 
                                     message == "ERROR:ROLE_TAKEN" -> {
@@ -114,10 +113,12 @@ class MainActivity : AppCompatActivity() {
                                 connecting = false
                                 isConnected = false
                                 setInputsEnabled(true)
-                                Snackbar.make(this@MainActivity, main,
+                                Snackbar.make(
+                                    this@MainActivity, main,
                                     "Disconnected from game endpoint",
-                                    Snackbar.LENGTH_LONG).show()
-                                if(error != "Client closed connection") {
+                                    Snackbar.LENGTH_LONG
+                                ).show()
+                                if (error != "Client closed connection") {
                                     etEndpoint.background = AppCompatResources.getDrawable(
                                         this@MainActivity,
                                         R.drawable.dr_border_rounded_red
@@ -130,8 +131,20 @@ class MainActivity : AppCompatActivity() {
                                 pbProgressIndicator.visibility = GONE
                             }
                         }
+                        try {
+                            connect("${etEndpoint.text}")
+                        } catch (ex: Exception) {
+                            runOnUiThread {
+                                Snackbar.make(main, "Error connecting to game endpoint${ex.message?.let { ": $it" } ?: ""}",
+                                    Snackbar.LENGTH_LONG).show()
+                                Log.e("ConnectionError", ex.stackTrace.contentToString())
+                                connecting = false
+                                setInputsEnabled(true)
+                                etEndpoint.background = AppCompatResources.getDrawable(this@MainActivity, R.drawable.dr_border_rounded_red)
+                                pbProgressIndicator.visibility = GONE
+                            }
+                        }
 
-                    connect("${etEndpoint.text}")
                     }
                 }
                 else if(!isConnected){
