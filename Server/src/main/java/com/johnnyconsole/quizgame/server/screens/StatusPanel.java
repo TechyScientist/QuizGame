@@ -111,7 +111,7 @@ public class StatusPanel extends Application {
 
     private void updateUI() {
         updateLabel(hostStatus, stations.containsKey(HOST));
-        updateLabel(playerStatus, stations.containsKey(PLAYER));
+        updateLabel(playerStatus, stations.containsKey(CHALLENGER));
         updateLabel(chaserStatus, stations.containsKey(CHASER));
         start.setDisable(stations.size() < 3);
     }
