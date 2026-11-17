@@ -24,7 +24,7 @@ import static com.johnnyconsole.quizgame.server.enums.Role.*;
 public class StatusPanel extends Application {
 
     private final Label hostStatus = new Label("Disconnected"),
-            playerStatus = new Label("Disconnected"),
+            challengerStatus = new Label("Disconnected"),
             chaserStatus = new Label("Disconnected");
     private final Button start = new Button("Begin Game");
 
@@ -45,7 +45,7 @@ public class StatusPanel extends Application {
 
         root.addRow(0, new Label("Endpoint:"), endpoint);
         root.addRow(1, new Label("Host Station:"), hostStatus);
-        root.addRow(2, new Label("Player Station:"), playerStatus);
+        root.addRow(2, new Label("Challenger Station:"), challengerStatus);
         root.addRow(3, new Label("Chaser Station:"), chaserStatus);
         root.add(start, 0, 4, 2, 1);
 
@@ -111,7 +111,7 @@ public class StatusPanel extends Application {
 
     private void updateUI() {
         updateLabel(hostStatus, stations.containsKey(HOST));
-        updateLabel(playerStatus, stations.containsKey(PLAYER));
+        updateLabel(challengerStatus, stations.containsKey(CHALLENGER));
         updateLabel(chaserStatus, stations.containsKey(CHASER));
         start.setDisable(stations.size() < 3);
     }
