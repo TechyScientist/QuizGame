@@ -79,6 +79,9 @@
                                         <rect key="frame" x="0.0" y="180" width="258" height="34.333333333333343"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="filled" title="Connect"/>
+                                        <connections>
+                                            <action selector="onConnect" destination="BYZ-38-t0r" eventType="touchUpInside" id="TCj-Tj-oRh"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                             </stackView>
@@ -96,6 +99,10 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="btConnect" destination="yeP-Ba-OpA" id="sHc-Gx-Bhd"/>
+                        <outlet property="etEndpoint" destination="6hK-CG-VqP" id="SE4-9d-ZZ2"/>
+                        <outlet property="pbProgressIndicator" destination="dBo-gv-P8U" id="4xk-Wh-syx"/>
+                        <outlet property="rgRoleSelect" destination="XOM-9D-F4P" id="1vV-a2-dFa"/>
                         <segue destination="a0R-ZQ-B1i" kind="show" identifier="ShowPlayerViewController" id="FCq-Wz-Lbt"/>
                         <segue destination="2Wc-Zc-mfH" kind="show" identifier="ShowHostViewController" id="3Er-Aj-jVx"/>
                     </connections>
