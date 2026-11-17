@@ -1,6 +1,8 @@
 import UIKit
 
 class HostViewController: UIViewController {
+    
+    private let role: Role = .host
 
     override func viewDidLoad() {
         super.viewDidLoad()
