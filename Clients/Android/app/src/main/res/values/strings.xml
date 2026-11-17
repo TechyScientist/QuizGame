@@ -5,6 +5,6 @@
     <string name="lb_connect">Connect</string>
     <string name="lb_disconnect">Disconnect</string>
     <string name="lb_host_station">Host Station</string>
-    <string name="lb_player_station">Player Station</string>
+    <string name="lb_challenger_station">Challenger Station</string>
     <string name="lb_chaser_station">Chaser Station</string>
 </resources>
