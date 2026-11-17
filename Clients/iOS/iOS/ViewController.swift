@@ -12,8 +12,8 @@ class ViewController: UIViewController {
 
         override func viewDidLoad() {
             super.viewDidLoad()
-            styleBorder(view: etEndpoint, color: .systemBlue)
-            styleBorder(view: rgRoleSelect, color: .systemBlue)
+            styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
+            styleBorder(view: rgRoleSelect, color: UIColor(named: "border-blue")!)
         }
 
         override func viewWillAppear(_ animated: Bool) {
@@ -23,8 +23,8 @@ class ViewController: UIViewController {
             setInputsEnabled(!connected)
             btConnect.setTitle(connected ? "Disconnect" : "Connect", for: .normal)
             if !connected {
-                styleBorder(view: etEndpoint, color: .systemBlue)
-                styleBorder(view: rgRoleSelect, color: .systemBlue)
+                styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
+                styleBorder(view: rgRoleSelect, color: UIColor(named: "border-blue")!)
             }
         }
     
