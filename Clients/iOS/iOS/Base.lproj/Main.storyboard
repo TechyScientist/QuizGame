@@ -103,7 +103,7 @@
                         <outlet property="etEndpoint" destination="6hK-CG-VqP" id="SE4-9d-ZZ2"/>
                         <outlet property="pbProgressIndicator" destination="dBo-gv-P8U" id="4xk-Wh-syx"/>
                         <outlet property="rgRoleSelect" destination="XOM-9D-F4P" id="1vV-a2-dFa"/>
-                        <segue destination="a0R-ZQ-B1i" kind="show" identifier="ShowPlayerViewController" id="FCq-Wz-Lbt"/>
+                        <segue destination="a0R-ZQ-B1i" kind="show" identifier="ShowResponseViewController" id="FCq-Wz-Lbt"/>
                         <segue destination="2Wc-Zc-mfH" kind="show" identifier="ShowHostViewController" id="3Er-Aj-jVx"/>
                     </connections>
                 </viewController>
@@ -111,37 +111,61 @@
             </objects>
             <point key="canvasLocation" x="72.51908396946564" y="101.40845070422536"/>
         </scene>
-        <!--Player View Controller-->
+        <!--Response View Controller-->
         <scene sceneID="siV-90-fkI">
             <objects>
-                <viewController id="a0R-ZQ-B1i" customClass="PlayerViewController" customModule="iOS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="a0R-ZQ-B1i" customClass="ResponseViewController" customModule="iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tw3-NE-zcD">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Response" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ans-gb-nY4">
+                                <rect key="frame" x="159" y="415.66666666666669" width="75" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="Fiq-3e-heL"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ans-gb-nY4" firstAttribute="centerX" secondItem="tw3-NE-zcD" secondAttribute="centerX" id="49r-cO-9Zd"/>
+                            <constraint firstItem="ans-gb-nY4" firstAttribute="centerY" secondItem="tw3-NE-zcD" secondAttribute="centerY" id="5HI-se-g61"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="7Ro-6D-En7"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CCQ-Y3-eAV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="805" y="-155"/>
+            <point key="canvasLocation" x="839" y="-166"/>
         </scene>
         <!--Host View Controller-->
         <scene sceneID="7iG-9e-Hag">
             <objects>
-                <viewController id="2Wc-Zc-mfH" customClass="HostViewController" customModule="iOS" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="2Wc-Zc-mfH" customClass="HostViewController" customModule="iOS" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="clB-J0-DyL">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="793"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Host" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R4w-Zq-igO">
+                                <rect key="frame" x="178.66666666666666" y="415.66666666666669" width="36" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="eSL-Su-8tU"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="R4w-Zq-igO" firstAttribute="centerX" secondItem="clB-J0-DyL" secondAttribute="centerX" id="5XY-ir-yif"/>
+                            <constraint firstItem="R4w-Zq-igO" firstAttribute="centerY" secondItem="clB-J0-DyL" secondAttribute="centerY" id="fLP-OD-AfE"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="wKq-bc-ueG"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HVl-cG-0QY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="798" y="484"/>
+            <point key="canvasLocation" x="839" y="482"/>
         </scene>
     </scenes>
     <resources>
