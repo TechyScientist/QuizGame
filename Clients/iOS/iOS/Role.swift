@@ -1,7 +1,7 @@
 import Foundation
 
 enum Role: String {
-    case CHALLENGER = "CHALLENGER"
-    case CHASER = "CHASER"
-    case HOST = "HOST"
+    case challenger = "CHALLENGER"
+    case chaser = "CHASER"
+    case host = "HOST"
 }
