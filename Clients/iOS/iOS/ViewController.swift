@@ -7,7 +7,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var btConnect: UIButton!
     @IBOutlet weak var pbProgressIndicator: UIActivityIndicatorView!
     
-    private var connecting = false;
+    private var connecting = false
     private let client = SocketManager.shared.client
 
         override func viewDidLoad() {
@@ -29,7 +29,67 @@ class ViewController: UIViewController {
         }
     
     @IBAction func onConnect() {
+        styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
+        styleBorder(view: rgRoleSelect, color: UIColor(named: "border-blue")!)
         
+        if !SocketManager.shared.isConnected && !connecting {
+            connecting = true
+            setInputsEnabled(false)
+            
+            let selectedRole: Role =
+            switch rgRoleSelect.selectedSegmentIndex {
+                case 0: .challenger
+                case 1: .chaser
+                default: .host
+            }
+            
+            client.onConnected = { [weak self] in
+                guard let self = self else { return }
+                self.connecting = false
+                self.btConnect.setTitle("Disconnect", for: .normal)
+                self.styleBorder(view: self.etEndpoint, color: UIColor(named: "border-green")!)
+                self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "border-green")!)
+                
+                // Register role only after handshake succeeds
+                self.client.registerRole(selectedRole)
+            }
+            
+            client.onMessageReceived = { [weak self] message in
+                guard let self = self else { return }
+                print("QuizGame Received: \(message)")
+                
+                if message == "REGISTERED:\(selectedRole.rawValue)" {
+                    // Detach listener before transitioning so next VC takes over cleanly
+                    self.client.onMessageReceived = nil
+                    //self.navigateToGameScreen(for: selectedRole)
+                } else if message == "ERROR:ROLE_TAKEN" {
+                    self.client.disconnect()
+                    self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "border-red")!)
+                    self.showAlert(title: "Role Taken", message: "The \(selectedRole.rawValue) station is already connected.")
+                }
+            }
+            
+            client.onDisconnected = { [weak self] error in
+                guard let self = self else { return }
+                self.connecting = false
+                self.setInputsEnabled(true)
+                self.btConnect.setTitle("Connect", for: .normal)
+                
+                if error != "Client closed connection" {
+                    self.styleBorder(view: self.etEndpoint, color: UIColor(named: "border-red")!)
+                    self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "border-red")!)
+                    self.showAlert(title: "Disconnected", message: error)
+                }
+            }
+            
+            let endpoint = etEndpoint.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            client.connect(urlString: endpoint)
+            
+        } else if !SocketManager.shared.isConnected {
+            showAlert(title: "Please Wait", message: "Connection in progress...")
+        } else {
+            client.disconnect()
+        }
     }
 
     private func setInputsEnabled(_ enabled: Bool) {
