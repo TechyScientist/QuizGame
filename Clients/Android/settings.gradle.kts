@@ -22,6 +22,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Android(Client"
+rootProject.name = "Android Client"
 include(":app")
  
