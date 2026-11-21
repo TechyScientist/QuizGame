@@ -15,6 +15,7 @@ import org.java_websocket.WebSocket;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.Map;
 
 import static com.johnnyconsole.quizgame.server.GameState.*;
@@ -124,7 +125,7 @@ public class StatusPanel extends Application {
 
             questionQueue = questions;
             start.setText("Game In Progress...");
-            stations.values().forEach(socket -> socket.send("GAME_START"));
+            broadcast("GAME_START");
             sendNextQuestion();
         }));
     }
@@ -155,17 +156,31 @@ public class StatusPanel extends Application {
         }
     }
 
+    private void broadcast(String message) {
+        stations.values().forEach(socket -> {
+            if(socket.isOpen()) socket.send(message);
+        });
+    }
+
+    private void broadcastTo(String message, Role... roles) {
+        for (Role role : roles) {
+            WebSocket socket = stations.get(role);
+            if (socket != null && socket.isOpen()) {
+                socket.send(message);
+            }
+        }
+    }
+
     private void sendNextQuestion() {
         if(questionQueue == null || questionQueue.isEmpty()) {
-            stations.values().forEach(socket -> socket.send("GAME_END"));
+            broadcast("GAME_END");
             return;
         }
         currentQuestion =  questionQueue.remove();
         Map<String, String> answers = currentQuestion.getOptions();
-        stations.values().forEach(socket -> socket.send(
-                String.format("QUESTION:%s\\%s\\%s\\%s",
+        broadcast(String.format("QUESTION:%s\\%s\\%s\\%s",
                         currentQuestion.getQuestionText(),
                         answers.get("A"), answers.get("B"), answers.get("C"))
-        ));
+        );
     }
 }
