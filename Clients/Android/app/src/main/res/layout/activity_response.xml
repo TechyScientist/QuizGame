@@ -43,7 +43,7 @@
             android:id="@+id/btAnswerA"
             android:text="@string/lb_answer_a"
             android:layout_marginEnd="20dp"
-            android:backgroundTint="@android:color/holo_purple"
+            android:backgroundTint="@color/color_purple"
             android:enabled="false"/>
 
         <TextView
@@ -70,7 +70,7 @@
             android:id="@+id/btAnswerB"
             android:text="@string/lb_answer_b"
             android:layout_marginEnd="20dp"
-            android:backgroundTint="@android:color/holo_purple"
+            android:backgroundTint="@color/color_purple"
             android:enabled="false"/>
 
         <TextView
@@ -97,7 +97,7 @@
             android:id="@+id/btAnswerC"
             android:text="@string/lb_answer_c"
             android:layout_marginEnd="20dp"
-            android:backgroundTint="@android:color/holo_purple"
+            android:backgroundTint="@color/color_purple"
             android:enabled="false"/>
 
         <TextView
@@ -113,7 +113,7 @@
         android:id="@+id/tvChallengerLocked"
         android:text="@string/lb_challenger_locked"
         android:textSize="20sp"
-        android:textColor="@color/primary"
+        android:textColor="@color/color_blue"
         android:layout_margin="20dp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
@@ -127,7 +127,7 @@
         android:id="@+id/tvChaserLocked"
         android:text="@string/lb_chaser_locked"
         android:textSize="20sp"
-        android:textColor="@android:color/holo_red_dark"
+        android:textColor="@color/color_red"
         android:layout_margin="20dp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,7 +140,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/pbProgressIndicator"
         android:indeterminate="true"
-        android:indeterminateTint="@color/primary"
+        android:indeterminateTint="@color/color_blue"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/llAnswerC"

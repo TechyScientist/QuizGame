@@ -79,8 +79,8 @@ class MainActivity : AppCompatActivity() {
                             runOnUiThread {
                                 Log.d("QuizGame", "Received Message: $message")
 
-                                when {
-                                    message == "REGISTERED:$role" -> {
+                                when (message) {
+                                    "REGISTERED:$role" -> {
                                         // Role accepted by server! Launch the appropriate Activity
                                         val targetActivity = when (Role.valueOf(role)) {
                                             Role.HOST -> HostActivity::class.java
@@ -90,8 +90,7 @@ class MainActivity : AppCompatActivity() {
                                         startActivity(Intent(this@MainActivity, targetActivity)
                                             .putExtra("role", role.lowercase().replaceFirstChar { c -> c.uppercaseChar() }))
                                     }
-
-                                    message == "ERROR:ROLE_TAKEN" -> {
+                                    "ERROR:ROLE_TAKEN" -> {
                                         // Server rejected the role; disconnect so the user can pick another
                                         client.disconnect()
                                         rgRoleSelect.background = AppCompatResources.getDrawable(

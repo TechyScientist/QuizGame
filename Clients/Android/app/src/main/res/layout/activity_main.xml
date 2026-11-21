@@ -109,7 +109,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/pbProgressIndicator"
         android:indeterminate="true"
-        android:indeterminateTint="@color/primary"
+        android:indeterminateTint="@color/color_blue"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

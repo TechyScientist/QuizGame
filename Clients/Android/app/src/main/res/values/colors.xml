@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary">#FF162DA3</color>
+    <color name="color_blue">#FF162DA3</color>
+    <color name="color_green">@android:color/holo_green_dark</color>
+    <color name="color_red">@android:color/holo_red_dark</color>
+    <color name="color_purple">@android:color/holo_purple</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFCF7FE</color>
 </resources>
