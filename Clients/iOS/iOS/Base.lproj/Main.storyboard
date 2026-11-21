@@ -148,9 +148,6 @@
                                                 <buttonConfiguration key="configuration" style="filled" title="A">
                                                     <color key="baseBackgroundColor" name="color-purple"/>
                                                 </buttonConfiguration>
-                                                <connections>
-                                                    <action selector="registerAnswerWithSender:" destination="a0R-ZQ-B1i" eventType="touchUpInside" id="fwa-ie-7V2"/>
-                                                </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bve-Mm-15W">
                                                 <rect key="frame" x="100" y="0.0" width="41.333333333333343" height="35"/>
@@ -174,9 +171,6 @@
                                                 <buttonConfiguration key="configuration" style="filled" title="B">
                                                     <color key="baseBackgroundColor" name="color-purple"/>
                                                 </buttonConfiguration>
-                                                <connections>
-                                                    <action selector="registerAnswerWithSender:" destination="a0R-ZQ-B1i" eventType="touchUpInside" id="a2A-Pw-ktV"/>
-                                                </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M4v-03-2ZL">
                                                 <rect key="frame" x="100" y="0.0" width="41.333333333333343" height="35"/>
@@ -201,9 +195,6 @@
                                                 <buttonConfiguration key="configuration" style="filled" title="C">
                                                     <color key="baseBackgroundColor" name="color-purple"/>
                                                 </buttonConfiguration>
-                                                <connections>
-                                                    <action selector="registerAnswerWithSender:" destination="a0R-ZQ-B1i" eventType="touchUpInside" id="ZrO-kq-Do8"/>
-                                                </connections>
                                             </button>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pfd-ls-mWA">
                                                 <rect key="frame" x="100" y="0.0" width="41.333333333333343" height="34.333333333333336"/>
