@@ -26,7 +26,8 @@ public class StatusPanel extends Application {
     private final Label hostStatus = new Label("Disconnected"),
             challengerStatus = new Label("Disconnected"),
             chaserStatus = new Label("Disconnected");
-    private final Button start = new Button("Begin Game");
+    private final Button start = new Button("Begin Game"),
+            exit = new Button("Exit");
 
     @Override
     public void start(Stage ps) {
@@ -39,8 +40,10 @@ public class StatusPanel extends Application {
         endpoint.setStyle("-fx-text-fill: #162da3; -fx-font-weight: bold;");
 
         start.setMaxWidth(Double.MAX_VALUE);
+        exit.setMaxWidth(Double.MAX_VALUE);
         start.setDisable(true);
-        start.setOnAction(e -> beginGame());
+        start.setOnAction(_ -> beginGame());
+        exit.setOnAction(_ -> Platform.exit());
         updateUI();
 
         root.addRow(0, new Label("Endpoint:"), endpoint);
@@ -48,24 +51,31 @@ public class StatusPanel extends Application {
         root.addRow(2, new Label("Challenger Station:"), challengerStatus);
         root.addRow(3, new Label("Chaser Station:"), chaserStatus);
         root.add(start, 0, 4, 2, 1);
+        root.add(exit, 0, 5, 2, 1);
 
         // Start the WebSocket server in the background
         wsServer = new GameServer(PORT, this);
         wsServer.start();
 
         // Ensure the background server thread stops when you close the window
-        ps.setOnCloseRequest(e -> {
-            try {
-                wsServer.stop(1000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-        });
+        ps.setOnCloseRequest(_ -> Platform.exit());
 
         Scene scene = new Scene(root);
         ps.setScene(scene);
         ps.setTitle("Quiz Game: Status Panel");
         ps.show();
+    }
+
+    @Override
+    public void stop() {
+        try {
+            if (wsServer != null) {
+                wsServer.stop(1000);
+            }
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        }
+        System.exit(0);
     }
 
     public boolean register(Role role, WebSocket socket) {
