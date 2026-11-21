@@ -2,7 +2,7 @@ package com.johnnyconsole.quizgame.server.screens;
 
 import com.johnnyconsole.quizgame.server.GameServer;
 import com.johnnyconsole.quizgame.server.enums.Role;
-
+import com.johnnyconsole.quizgame.server.model.Question;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -20,6 +20,7 @@ import java.util.Map;
 
 import static com.johnnyconsole.quizgame.server.GameState.*;
 import static com.johnnyconsole.quizgame.server.enums.Role.*;
+import static com.johnnyconsole.quizgame.server.model.QuestionService.fetchQuestionsAsync;
 
 public class StatusPanel extends Application {
 
@@ -113,17 +114,27 @@ public class StatusPanel extends Application {
 
     private void beginGame() {
         start.setDisable(true);
-        start.setText("Game In Progress...");
-        // Broadcast to all connected stations that the game is starting
-        stations.values().forEach(socket -> socket.send("GAME_START"));
-        // TODO: Fetch first question and send to stations
+        start.setText("Fetching Questions...");
+
+        fetchQuestionsAsync(100).thenAccept(questions -> Platform.runLater(() -> {
+            if (questions.isEmpty()) {
+                start.setText("Fetch Failed - Retry");
+                start.setDisable(stations.size() < 3);
+                return;
+            }
+
+            questionQueue = questions;
+            start.setText("Game In Progress...");
+            stations.values().forEach(socket -> socket.send("GAME_START"));
+            sendNextQuestion();
+        }));
     }
 
     private void updateUI() {
         updateLabel(hostStatus, stations.containsKey(HOST));
         updateLabel(challengerStatus, stations.containsKey(CHALLENGER));
         updateLabel(chaserStatus, stations.containsKey(CHASER));
-        start.setDisable(stations.size() < 3);
+        start.setDisable(stations.size() < 3 || questionQueue != null);
     }
 
     private void updateLabel(Label label, boolean isConnected) {
@@ -143,5 +154,19 @@ public class StatusPanel extends Application {
         } catch (Exception e) {
             return "127.0.0.1";
         }
+    }
+
+    private void sendNextQuestion() {
+        if(questionQueue == null || questionQueue.isEmpty()) {
+            stations.values().forEach(socket -> {socket.send("GAME_END"); });
+            return;
+        }
+        currentQuestion =  questionQueue.remove();
+        Map<String, String> answers = currentQuestion.getOptions();
+        stations.values().forEach(socket -> socket.send(
+                String.format("QUESTION:%s\\%s\\%s\\%s",
+                        currentQuestion.getQuestionText(),
+                        answers.get("A"), answers.get("B"), answers.get("C"))
+        ));
     }
 }
