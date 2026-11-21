@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvRole"
         android:layout_margin="20dp"
+        android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0"
@@ -22,6 +23,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvQuestionText"
         android:layout_margin="20dp"
+        android:textSize="17sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvRole"/>
@@ -42,6 +44,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/btAnswerA"
             android:text="@string/lb_answer_a"
+            android:textSize="17sp"
             android:layout_marginEnd="20dp"
             android:backgroundTint="@color/color_purple"
             android:enabled="false"/>
@@ -49,7 +52,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvAnswerAText"/>
+            android:id="@+id/tvAnswerAText"
+            android:textSize="17sp"/>
 
     </LinearLayout>
 
@@ -69,6 +73,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/btAnswerB"
             android:text="@string/lb_answer_b"
+            android:textSize="17sp"
             android:layout_marginEnd="20dp"
             android:backgroundTint="@color/color_purple"
             android:enabled="false"/>
@@ -76,7 +81,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvAnswerBText"/>
+            android:id="@+id/tvAnswerBText"
+            android:textSize="17sp"/>
 
     </LinearLayout>
 
@@ -96,6 +102,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/btAnswerC"
             android:text="@string/lb_answer_c"
+            android:textSize="17sp"
             android:layout_marginEnd="20dp"
             android:backgroundTint="@color/color_purple"
             android:enabled="false"/>
@@ -103,7 +110,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tvAnswerCText"/>
+            android:id="@+id/tvAnswerCText"
+            android:textSize="17sp"/>
 
     </LinearLayout>
 
@@ -112,7 +120,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvChallengerLocked"
         android:text="@string/lb_challenger_locked"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:textColor="@color/color_blue"
         android:layout_margin="20dp"
         android:visibility="invisible"
@@ -126,7 +134,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvChaserLocked"
         android:text="@string/lb_chaser_locked"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:textColor="@color/color_red"
         android:layout_margin="20dp"
         android:visibility="invisible"
