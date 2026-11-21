@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
                     pbProgressIndicator.visibility = VISIBLE
 
                     val role = when(rgRoleSelect.checkedRadioButtonId) {
-                        rbPlayerStation.id -> "PLAYER"
+                        rbPlayerStation.id -> "CHALLENGER"
                         rbChaserStation.id -> "CHASER"
                         else -> "HOST"
                     }
@@ -86,7 +86,9 @@ class MainActivity : AppCompatActivity() {
                                             Role.HOST -> HostActivity::class.java
                                             else -> PlayerActivity::class.java
                                         }
-                                        startActivity(Intent(this@MainActivity, targetActivity))
+
+                                        startActivity(Intent(this@MainActivity, targetActivity)
+                                            .putExtra("role", role.lowercase().replaceFirstChar { c -> c.uppercaseChar() }))
                                     }
 
                                     message == "ERROR:ROLE_TAKEN" -> {
