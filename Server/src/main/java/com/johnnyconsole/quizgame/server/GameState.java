@@ -14,7 +14,7 @@ public class GameState {
     public static final Map<Role, WebSocket> stations = new ConcurrentHashMap<>();
     public static final int PORT = 50505;
     public static GameServer wsServer;
-    public static Queue<Question> questionQueue = new ConcurrentLinkedDeque<>();
+    public static Queue<Question> questionQueue = null;
     public static Question currentQuestion = null;
 
 }
