@@ -1,16 +1,24 @@
 package com.johnnyconsole.quizgame.clients.android
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
+import android.view.View.INVISIBLE
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.johnnyconsole.quizgame.clients.android.databinding.ActivityResponseBinding
+import com.johnnyconsole.quizgame.clients.android.socket.SocketManager.client
 
 class ResponseActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityResponseBinding
     private lateinit var role: String
+    private lateinit var defaultBackgroundA: Drawable
+    private lateinit var defaultBackgroundB: Drawable
+    private lateinit var defaultBackgroundC: Drawable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityResponseBinding.inflate(layoutInflater)
@@ -24,12 +32,87 @@ class ResponseActivity : AppCompatActivity() {
                 insets
             }
 
+            defaultBackgroundA = btAnswerA.background
+            defaultBackgroundB = btAnswerB.background
+            defaultBackgroundC = btAnswerC.background
             role = intent.getStringExtra("role")!!
             tvRole.text = resources.getString(R.string.lb_role_text, role)
             tvRole.setTextColor(resources.getColor(
-                    if(role == "Challenger") R.color.primary else android.R.color.holo_red_dark,
-                theme))
+                    if(role == "Challenger") R.color.color_blue else R.color.color_red, theme))
 
+            client.onMessageReceived = { message ->
+                runOnUiThread {
+                    Log.d("QuizGame", "Message Received: $message")
+                    if (message == "GAME_START") {
+                        pbProgressIndicator.visibility = INVISIBLE
+                    }
+                    else if (message == "GAME_END") {
+                        client.disconnect()
+                        finish()
+                    }
+                    else if (message.startsWith("QUESTION:")) {
+                        val parts = message.substring(message.indexOf(':') + 1)
+                            .split("\\")
+                        tvQuestionText.text = parts[0]
+                        tvAnswerAText.text = parts[1]
+                        tvAnswerBText.text = parts[2]
+                        tvAnswerCText.text = parts[3]
+                        btAnswerA.background = defaultBackgroundA
+                        btAnswerB.background = defaultBackgroundB
+                        btAnswerC.background = defaultBackgroundC
+                        btAnswerA.backgroundTintList = AppCompatResources.getColorStateList(
+                            this@ResponseActivity, R.color.color_purple)
+                        btAnswerB.backgroundTintList = AppCompatResources.getColorStateList(
+                            this@ResponseActivity, R.color.color_purple)
+                        btAnswerC.backgroundTintList = AppCompatResources.getColorStateList(
+                            this@ResponseActivity, R.color.color_purple)
+                        btAnswerA.isEnabled = true
+                        btAnswerB.isEnabled = true
+                        btAnswerC.isEnabled = true
+                    }
+                    else if (message.startsWith("REVEAL:")) {
+                        val parts = message.substring(message.indexOf(":") + 1)
+                            .split("\\")
+                        when (parts[0]) {
+                            "CHALLENGER" -> when (parts[1]) {
+                                "A" -> btAnswerA
+                                "B" -> btAnswerB
+                                else -> btAnswerC
+                            }.backgroundTintList =
+                                AppCompatResources.getColorStateList(this@ResponseActivity,
+                                    R.color.color_blue)
+
+                            "CHASER" -> when (parts[1]) {
+                                "A" -> btAnswerA
+                                "B" -> btAnswerB
+                                else -> btAnswerC
+                            }.background =
+                                AppCompatResources.getDrawable(this@ResponseActivity,
+                                    R.drawable.dr_border_rounded_red)
+
+                            else -> when (parts[1]) {
+                                "A" -> btAnswerA
+                                "B" -> btAnswerB
+                                else -> btAnswerC
+                            }.backgroundTintList =
+                                AppCompatResources.getColorStateList(this@ResponseActivity,
+                                    R.color.color_green)
+                        }
+                    }
+                }
+            }
+
+            client.onDisconnected = {
+                runOnUiThread { finish() }
+            }
+
+            val buttons = mapOf("A" to btAnswerA, "B" to btAnswerB, "C" to btAnswerC)
+            buttons.forEach { (letter, button) ->
+                button.setOnClickListener { _ ->
+                    client.sendMessage("ANSWER:${role.uppercase()}\\$letter")
+                    buttons.forEach {(_, bt) -> bt.isEnabled = false }
+                }
+            }
         }
     }
 }
