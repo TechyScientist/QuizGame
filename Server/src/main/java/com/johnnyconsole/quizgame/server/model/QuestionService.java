@@ -16,13 +16,13 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class QuestionService {
 
     private static final String API_URL = "https://the-trivia-api.com/v2/questions?limit=50";
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private static final HttpClient httpClient = HttpClient.newHttpClient();
 
     /**
      * Asynchronously fetches up to `targetCount` unique questions, trims them to 3 options (A, B, C),
      * and returns them in a thread-safe Queue.
      */
-    public CompletableFuture<Queue<Question>> fetchQuestionsAsync(int targetCount) {
+    public static CompletableFuture<Queue<Question>> fetchQuestionsAsync(int targetCount) {
         return CompletableFuture.supplyAsync(() -> {
             Queue<Question> questionQueue = new ConcurrentLinkedQueue<>();
             Set<String> seenIds = new HashSet<>();
