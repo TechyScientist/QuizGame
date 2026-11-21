@@ -1,5 +1,6 @@
 package com.johnnyconsole.quizgame.clients.android
 
+import android.app.GameState
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.johnnyconsole.quizgame.clients.android.databinding.ActivityResponseBinding
 import com.johnnyconsole.quizgame.clients.android.enums.Role
+import com.johnnyconsole.quizgame.clients.android.socket.GameSocketClient
+import com.johnnyconsole.quizgame.clients.android.socket.SocketManager
 import com.johnnyconsole.quizgame.clients.android.socket.SocketManager.client
 
 class ResponseActivity : AppCompatActivity() {
@@ -106,7 +109,10 @@ class ResponseActivity : AppCompatActivity() {
             }
 
             client.onDisconnected = {
-                runOnUiThread { finish() }
+                runOnUiThread {
+                    SocketManager.isConnected = false
+                    finish()
+                }
             }
 
             buttons.forEach { (letter, button) ->
