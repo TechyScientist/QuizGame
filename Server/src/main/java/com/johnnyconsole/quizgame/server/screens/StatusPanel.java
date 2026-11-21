@@ -2,7 +2,6 @@ package com.johnnyconsole.quizgame.server.screens;
 
 import com.johnnyconsole.quizgame.server.GameServer;
 import com.johnnyconsole.quizgame.server.enums.Role;
-import com.johnnyconsole.quizgame.server.model.Question;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -158,7 +157,7 @@ public class StatusPanel extends Application {
 
     private void sendNextQuestion() {
         if(questionQueue == null || questionQueue.isEmpty()) {
-            stations.values().forEach(socket -> {socket.send("GAME_END"); });
+            stations.values().forEach(socket -> socket.send("GAME_END"));
             return;
         }
         currentQuestion =  questionQueue.remove();
