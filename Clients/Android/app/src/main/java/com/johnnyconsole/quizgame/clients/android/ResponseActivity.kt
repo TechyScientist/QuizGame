@@ -5,16 +5,15 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.johnnyconsole.quizgame.clients.android.databinding.ActivityPlayerBinding
-import com.johnnyconsole.quizgame.clients.android.enums.Role
+import com.johnnyconsole.quizgame.clients.android.databinding.ActivityResponseBinding
 
-class PlayerActivity : AppCompatActivity() {
+class ResponseActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityPlayerBinding
+    private lateinit var binding: ActivityResponseBinding
     private lateinit var role: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
+        binding = ActivityResponseBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         with(binding) {

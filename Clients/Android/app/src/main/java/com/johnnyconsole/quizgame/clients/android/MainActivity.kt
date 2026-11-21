@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                                         // Role accepted by server! Launch the appropriate Activity
                                         val targetActivity = when (Role.valueOf(role)) {
                                             Role.HOST -> HostActivity::class.java
-                                            else -> PlayerActivity::class.java
+                                            else -> ResponseActivity::class.java
                                         }
 
                                         startActivity(Intent(this@MainActivity, targetActivity)
