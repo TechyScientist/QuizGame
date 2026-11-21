@@ -17,6 +17,7 @@ class ResponseViewController: UIViewController {
     
     private var role: Role!
     private var client = SocketManager.shared.client
+    private var buttons: [String: UIButton] = [:]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +29,8 @@ class ResponseViewController: UIViewController {
         else {
             tvRole.textColor = UIColor(named: "color-red")!
         }
+        
+        buttons = ["A": btAnswerA, "B": btAnswerB, "C": btAnswerC]
         
         client.onMessageReceived = { [weak self] message in
             DispatchQueue.main.async {
@@ -47,20 +50,20 @@ class ResponseViewController: UIViewController {
                     self.tvAnswerBText.text = parts[2]
                     self.tvAnswerCText.text = parts[3]
                     
-                    [self.btAnswerA, self.btAnswerB, self.btAnswerC].forEach { button in
-                        button?.layer.borderWidth = .zero
-                        button?.tintColor = UIColor(named: "color-purple")!
-                        button?.isEnabled = true
+                    self.buttons.forEach { _, button in
+                        button.layer.borderWidth = .zero
+                        button.tintColor = UIColor(named: "color-purple")!
+                        button.isEnabled = true
                     }
+                    
+                    self.tvChallengerLocked.isHidden = true
+                    self.tvChaserLocked.isHidden = true
+                    
                 } else if message.starts(with: "REVEAL:") {
                     let payload = message[message.index(after: message.firstIndex(of: ":")!)...]
-                    let parts = payload.split(separator: "\\")
+                    let parts = payload.split(separator: "\\").map(String.init)
                     
-                    let targetButton = switch parts[1] {
-                        case "A": self.btAnswerA
-                        case "B": self.btAnswerB
-                        default: self.btAnswerC
-                    }
+                    let targetButton = self.buttons[parts[1]]
                     
                     switch parts[0] {
                         case "CHALLENGER":
@@ -73,6 +76,15 @@ class ResponseViewController: UIViewController {
                             targetButton?.tintColor = UIColor(named: "color-green")
                     }
                 }
+                else if(message.starts(with: "LOCKED:")) {
+                    let locked = Role(rawValue: String(message[message.index(after: message.firstIndex(of: ":")!)...]))
+                    if locked == .challenger {
+                        self.tvChallengerLocked.isHidden = false
+                    }
+                    else {
+                        self.tvChaserLocked.isHidden = false
+                    }
+                }
             }
         }
 
@@ -82,12 +94,12 @@ class ResponseViewController: UIViewController {
             }
         }
         
-        let buttons = ["A": btAnswerA, "B": btAnswerB, "C": btAnswerC]
         
         buttons.forEach {letter, button in
-            button?.addAction(UIAction { _ in
+            button.addAction(UIAction { [weak self] _ in
+                guard let self = self else { return }
                 self.client.sendMessage("ANSWER:\(self.role.rawValue)\\\(letter)")
-                buttons.forEach {_, bt in bt?.isEnabled = false}
+                self.buttons.forEach {_, bt in bt.isEnabled = false}
             }, for: .touchUpInside)
         }
     }
