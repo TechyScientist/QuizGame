@@ -12,8 +12,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
-        styleBorder(view: rgRoleSelect, color: UIColor(named: "border-blue")!)
+        styleBorder(view: etEndpoint, color: UIColor(named: "color-blue")!)
+        styleBorder(view: rgRoleSelect, color: UIColor(named: "color-blue")!)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -23,14 +23,14 @@ class ViewController: UIViewController {
         setInputsEnabled(!connected)
         btConnect.setTitle(connected ? "Disconnect" : "Connect", for: .normal)
         if !connected {
-            styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
-            styleBorder(view: rgRoleSelect, color: UIColor(named: "border-blue")!)
+            styleBorder(view: etEndpoint, color: UIColor(named: "color-blue")!)
+            styleBorder(view: rgRoleSelect, color: UIColor(named: "color-blue")!)
         }
     }
     
     @IBAction func onConnect() {
-        styleBorder(view: etEndpoint, color: UIColor(named: "border-blue")!)
-        styleBorder(view: rgRoleSelect, color: UIColor(named: "border-blue")!)
+        styleBorder(view: etEndpoint, color: UIColor(named: "color-blue")!)
+        styleBorder(view: rgRoleSelect, color: UIColor(named: "color-blue")!)
         
         if !SocketManager.shared.isConnected && !connecting {
             connecting = true
@@ -47,8 +47,8 @@ class ViewController: UIViewController {
                 guard let self = self else { return }
                 self.connecting = false
                 self.btConnect.setTitle("Disconnect", for: .normal)
-                self.styleBorder(view: self.etEndpoint, color: UIColor(named: "border-green")!)
-                self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "border-green")!)
+                self.styleBorder(view: self.etEndpoint, color: UIColor(named: "color-green")!)
+                self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "color-green")!)
                 
                 // Register role only after handshake succeeds
                 self.client.registerRole(selectedRole)
@@ -64,7 +64,7 @@ class ViewController: UIViewController {
                     self.navigateToGameScreen(for: selectedRole)
                 } else if message == "ERROR:ROLE_TAKEN" {
                     self.client.disconnect()
-                    self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "border-red")!)
+                    self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "color-red")!)
                     self.showAlert(title: "Role Taken", message: "The \(selectedRole.rawValue) station is already connected.")
                 }
             }
@@ -76,8 +76,8 @@ class ViewController: UIViewController {
                 self.btConnect.setTitle("Connect", for: .normal)
                 
                 if error != "Client closed connection" {
-                    self.styleBorder(view: self.etEndpoint, color: UIColor(named: "border-red")!)
-                    self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "border-red")!)
+                    self.styleBorder(view: self.etEndpoint, color: UIColor(named: "color-red")!)
+                    self.styleBorder(view: self.rgRoleSelect, color: UIColor(named: "color-red")!)
                     self.showAlert(title: "Disconnected", message: error)
                 }
             }
