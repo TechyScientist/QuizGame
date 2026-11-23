@@ -15,4 +15,12 @@
     <string name="lb_challenger_locked">Challenger Locked</string>
     <string name="lb_chaser_locked">Chaser Locked</string>
     <string name="lb_time_up">Time\'s Up!</string>
+    <string name="host_control">Host Control</string>
+    <string name="lb_player_status">%1$s: %2$s</string>
+    <string name="lb_challenger">Challenger</string>
+    <string name="lb_chaser">Chaser</string>
+    <string name="lb_correct">Correct</string>
+    <string name="lb_end_game">End Game</string>
+    <string name="lb_next_question">Next Question</string>
+    <string name="lb_waiting">Waiting for game to start...</string>
 </resources>
