@@ -1,6 +1,5 @@
 package com.johnnyconsole.quizgame.clients.android
 
-import android.app.GameState
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -13,7 +12,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.johnnyconsole.quizgame.clients.android.databinding.ActivityResponseBinding
 import com.johnnyconsole.quizgame.clients.android.enums.Role
-import com.johnnyconsole.quizgame.clients.android.socket.GameSocketClient
 import com.johnnyconsole.quizgame.clients.android.socket.SocketManager
 import com.johnnyconsole.quizgame.clients.android.socket.SocketManager.client
 
@@ -75,9 +73,11 @@ class ResponseActivity : AppCompatActivity() {
                             this@ResponseActivity, R.color.color_purple)
                         tvChallengerLocked.visibility = INVISIBLE
                         tvChaserLocked.visibility = INVISIBLE
+                        tvTimeUp.visibility = INVISIBLE
                         btAnswerA.isEnabled = true
                         btAnswerB.isEnabled = true
                         btAnswerC.isEnabled = true
+
                     }
                     else if (message.startsWith("REVEAL:")) {
                         val parts = message.substring(message.indexOf(":") + 1)
@@ -104,6 +104,13 @@ class ResponseActivity : AppCompatActivity() {
                         else {
                             tvChaserLocked.visibility = VISIBLE
                         }
+                    }
+                    else if(message == "TIMER_START") {
+
+                    }
+                    else if(message == "TIMER_UP") {
+                        tvTimeUp.visibility = VISIBLE
+                        buttons.values.forEach { it.isEnabled = false }
                     }
                 }
             }
