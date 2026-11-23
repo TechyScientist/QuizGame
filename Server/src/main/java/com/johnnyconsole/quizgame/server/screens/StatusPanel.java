@@ -2,6 +2,8 @@ package com.johnnyconsole.quizgame.server.screens;
 
 import com.johnnyconsole.quizgame.server.GameServer;
 import com.johnnyconsole.quizgame.server.enums.Role;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -10,12 +12,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
+import javafx.util.Duration;
 import org.java_websocket.WebSocket;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Arrays;
 import java.util.Map;
 
 import static com.johnnyconsole.quizgame.server.GameState.*;
@@ -29,6 +30,9 @@ public class StatusPanel extends Application {
             chaserStatus = new Label("Disconnected");
     private final Button start = new Button("Begin Game"),
             exit = new Button("Exit");
+    private Timeline lockoutTimer;
+    private boolean timeExpired = false;
+    private String challengerAnswer = null, chaserAnswer = null;
 
     @Override
     public void start(Stage ps) {
@@ -96,19 +100,56 @@ public class StatusPanel extends Application {
     }
 
     public void handleGameMessage(WebSocket sender, String message) {
-        // Identify which role sent the message
         Role senderRole = stations.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(sender))
                 .map(Map.Entry::getKey)
                 .findFirst()
                 .orElse(null);
 
-        if (senderRole == null) return; // Ignore unregistered sockets
+        if (senderRole == null) return;
 
         Platform.runLater(() -> {
-            // Handle incoming commands from stations here!
-            // Example: "ANSWER:A" from PLAYER/CHASER, or "COMMAND:REVEAL" / "COMMAND:NEXT" from HOST
-            System.out.println(senderRole + " sent: " + message);
+            if (message.startsWith("ANSWER:")) {
+                // Ignore late answers if the 5-second lockout timer already expired
+                if (timeExpired) return;
+
+                // Format: "ANSWER:CHALLENGER\A" or "ANSWER:CHASER\B"
+                String[] parts = message.substring(message.indexOf(':') + 1).split("\\\\");
+                String letter = parts[1];
+
+                if (senderRole == CHALLENGER && challengerAnswer == null) {
+                    challengerAnswer = letter;
+                    broadcast("LOCKED:CHALLENGER");
+                    handleTimerOnLockIn(CHASER);
+                } else if (senderRole == CHASER && chaserAnswer == null) {
+                    chaserAnswer = letter;
+                    broadcast("LOCKED:CHASER");
+                    handleTimerOnLockIn(CHALLENGER);
+                }
+            } else if (senderRole == HOST) {
+                switch (message) {
+                    case "REVEAL:CHALLENGER" -> {
+                        if (challengerAnswer != null) {
+                            broadcast("REVEAL:CHALLENGER\\" + challengerAnswer);
+                        }
+                    }
+                    case "REVEAL:CHASER" -> {
+                        if (chaserAnswer != null) {
+                            broadcast("REVEAL:CHASER\\" + chaserAnswer);
+                        }
+                    }
+                    case "REVEAL:CORRECT" -> {
+                        if (currentQuestion != null) {
+                            broadcast("REVEAL:CORRECT\\" + currentQuestion.getCorrectLetter());
+                        }
+                    }
+                    case "NEXT" -> sendNextQuestion();
+                    case "END" -> {
+                        stopLockoutTimer();
+                        broadcast("GAME_END");
+                    }
+                }
+            }
         });
     }
 
@@ -172,15 +213,46 @@ public class StatusPanel extends Application {
     }
 
     private void sendNextQuestion() {
-        if(questionQueue == null || questionQueue.isEmpty()) {
+        stopLockoutTimer();
+        challengerAnswer = null;
+        chaserAnswer = null;
+        timeExpired = false;
+
+        if (questionQueue == null || questionQueue.isEmpty()) {
             broadcast("GAME_END");
             return;
         }
-        currentQuestion =  questionQueue.remove();
+        currentQuestion = questionQueue.remove();
         Map<String, String> answers = currentQuestion.getOptions();
         broadcast(String.format("QUESTION:%s\\%s\\%s\\%s",
-                        currentQuestion.getQuestionText(),
-                        answers.get("A"), answers.get("B"), answers.get("C"))
+                currentQuestion.getQuestionText(),
+                answers.get("A"), answers.get("B"), answers.get("C"))
         );
+    }
+
+    private void handleTimerOnLockIn(Role otherRole) {
+        boolean bothAnswered = (challengerAnswer != null && chaserAnswer != null);
+
+        if (bothAnswered) {
+            stopLockoutTimer();
+            broadcastTo("TIMER_STOP", HOST);
+        } else {
+            // First player locked in — start the 5-second countdown for the waiting player
+            stopLockoutTimer();
+            broadcastTo("TIMER_START", otherRole, HOST);
+
+            lockoutTimer = new Timeline(new KeyFrame(Duration.seconds(5), _ -> {
+                timeExpired = true;
+                broadcastTo("TIMER_UP", otherRole, HOST);
+            }));
+            lockoutTimer.play();
+        }
+    }
+
+    private void stopLockoutTimer() {
+        if (lockoutTimer != null) {
+            lockoutTimer.stop();
+            lockoutTimer = null;
+        }
     }
 }
