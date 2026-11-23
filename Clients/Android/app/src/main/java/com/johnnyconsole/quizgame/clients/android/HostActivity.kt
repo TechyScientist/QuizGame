@@ -202,6 +202,7 @@ class HostActivity : AppCompatActivity() {
                     .setMessage("This will disconnect all stations and end the current session.")
                     .setPositiveButton("End Game") { _, _ ->
                         client.sendMessage("END")
+                        client.disconnect()
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
