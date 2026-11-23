@@ -45,6 +45,12 @@ class HostViewController: UIViewController {
             "C": lbAnswerC
         ]
         
+        optionViews.forEach({ letter, view in
+            if let label = view {
+                renderOptionCard(letter: letter, view: label)
+            }
+        })
+        
         if let soundURL = Bundle.main.url(forResource: "timer", withExtension: "mp3") {
                     audioPlayer = try? AVAudioPlayer(contentsOf: soundURL)
                     audioPlayer?.prepareToPlay()
@@ -72,8 +78,10 @@ class HostViewController: UIViewController {
                     
                     self.lbChallengerStatus.text = "Challenger: Waiting"
                     self.lbChallengerStatus.backgroundColor = .white
+                    self.lbChallengerStatus.textColor = .black
                     self.lbChaserStatus.text = "Chaser: Waiting"
                     self.lbChaserStatus.backgroundColor = .white
+                    self.lbChaserStatus.textColor = .black
                     
                     self.btRevealChallenger.isEnabled = false
                     self.btRevealCorrect.isEnabled = false
@@ -92,12 +100,14 @@ class HostViewController: UIViewController {
                         self.challengerLocked = true
                         self.lbChallengerStatus.text = "Challenger: Locked"
                         self.lbChallengerStatus.backgroundColor = UIColor(named: "color-blue")!
+                        self.lbChallengerStatus.textColor = .white
                         self.btRevealChallenger.isEnabled = true
                     }
                     else if(lockedRole == .chaser) {
                         self.chaserLocked = true
                         self.lbChaserStatus.text = "Chaser: Locked"
-                        self.lbChaserStatus.backgroundColor = UIColor(named: "color-red")
+                        self.lbChaserStatus.backgroundColor = UIColor(named: "color-red")!
+                        self.lbChaserStatus.textColor = .white
                         self.btRevealChaser.isEnabled = true
                     }
                     self.updateCorrectButtonState()
@@ -178,7 +188,6 @@ class HostViewController: UIViewController {
             controller.addAction(UIAlertAction(title: "Cancel", style: .cancel))
             controller.addAction(UIAlertAction(title: "End Game", style: .destructive, handler: { _ in
                 self.client.sendMessage("END")
-                self.client.disconnect()
             }))
             self.present(controller, animated: true)
         }, for: .touchUpInside)
