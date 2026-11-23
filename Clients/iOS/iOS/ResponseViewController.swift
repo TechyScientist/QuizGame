@@ -9,6 +9,7 @@ class ResponseViewController: UIViewController {
     @IBOutlet weak var tvAnswerCText: UILabel!
     @IBOutlet weak var tvChaserLocked: UILabel!
     @IBOutlet weak var tvChallengerLocked: UILabel!
+    @IBOutlet weak var tvTimeUp: UILabel!
     @IBOutlet weak var btAnswerA: UIButton!
     @IBOutlet weak var btAnswerB: UIButton!
     @IBOutlet weak var btAnswerC: UIButton!
@@ -58,6 +59,7 @@ class ResponseViewController: UIViewController {
                     
                     self.tvChallengerLocked.isHidden = true
                     self.tvChaserLocked.isHidden = true
+                    self.tvTimeUp.isHidden = true
                     
                 } else if message.starts(with: "REVEAL:") {
                     let payload = message[message.index(after: message.firstIndex(of: ":")!)...]
@@ -84,6 +86,13 @@ class ResponseViewController: UIViewController {
                     else {
                         self.tvChaserLocked.isHidden = false
                     }
+                }
+                else if(message == "TIMER_START") {
+                    
+                }
+                else if(message == "TIME_UP") {
+                    self.tvTimeUp.isHidden = false
+                    self.buttons.forEach { (_, button) in button.isEnabled = false }
                 }
             }
         }
