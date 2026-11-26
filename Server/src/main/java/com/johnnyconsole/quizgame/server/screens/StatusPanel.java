@@ -146,6 +146,8 @@ public class StatusPanel extends Application {
                     case "NEXT" -> sendNextQuestion();
                     case "END" -> {
                         stopLockoutTimer();
+                        start.setText("Begin Game");
+                        questionQueue = null;
                         broadcast("GAME_END");
                     }
                 }
@@ -220,6 +222,7 @@ public class StatusPanel extends Application {
 
         if (questionQueue == null || questionQueue.isEmpty()) {
             broadcast("GAME_END");
+            questionQueue = null;
             return;
         }
         currentQuestion = questionQueue.remove();
