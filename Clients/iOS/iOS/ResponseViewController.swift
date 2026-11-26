@@ -41,6 +41,7 @@ class ResponseViewController: UIViewController {
                     self.pbProgressIndicator.isHidden = true
                 } else if message == "GAME_END" {
                     self.client.disconnect()
+                    SocketManager.shared.isConnected = false
                     self.dismiss(animated: true)
                 } else if message.starts(with: "QUESTION:") {
                     let payload = message[message.index(after: message.firstIndex(of: ":")!)...]
@@ -99,6 +100,7 @@ class ResponseViewController: UIViewController {
 
         client.onDisconnected = { [weak self] _ in
             DispatchQueue.main.async {
+                SocketManager.shared.isConnected = false
                 self?.dismiss(animated: true)
             }
         }

@@ -67,6 +67,7 @@ class HostViewController: UIViewController {
                 if(message == "GAME_END") {
                     self.stopCountdown()
                     self.client.disconnect()
+                    SocketManager.shared.isConnected = false
                     self.dismiss(animated: true)
                 }
                 else if(message.starts(with: "QUESTION:")) {
