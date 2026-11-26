@@ -53,6 +53,7 @@ class ResponseActivity : AppCompatActivity() {
                     }
                     else if (message == "GAME_END") {
                         client.disconnect()
+                        SocketManager.isConnected = false
                         finish()
                     }
                     else if (message.startsWith("QUESTION:")) {

@@ -203,6 +203,7 @@ class HostActivity : AppCompatActivity() {
                     .setPositiveButton("End Game") { _, _ ->
                         client.sendMessage("END")
                         client.disconnect()
+                        SocketManager.isConnected = false
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
