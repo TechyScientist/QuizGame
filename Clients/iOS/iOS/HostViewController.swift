@@ -51,6 +51,11 @@ class HostViewController: UIViewController {
             }
         })
         
+        btEndGame.layer.borderWidth = 1.5
+        btEndGame.layer.borderColor = UIColor(named: "color-red")?.cgColor
+        btEndGame.layer.cornerRadius = 8
+        btEndGame.setTitleColor(UIColor(named: "color-red"), for: .normal)
+        
         if let soundURL = Bundle.main.url(forResource: "timer", withExtension: "mp3") {
                     audioPlayer = try? AVAudioPlayer(contentsOf: soundURL)
                     audioPlayer?.prepareToPlay()
@@ -202,9 +207,9 @@ class HostViewController: UIViewController {
     
     private func startCountdown() {
         stopCountdown()
-        
         pvLockoutTimer.isHidden = false
         pvLockoutTimer.setProgress(1.0, animated: false)
+        pvLockoutTimer.layoutIfNeeded()
         UIView.animate(withDuration: 5.0, delay: 0, options: .curveLinear) {
             self.pvLockoutTimer?.setProgress(0.0, animated: true)
         }
